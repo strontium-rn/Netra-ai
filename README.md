@@ -23,22 +23,22 @@ Netra.ai/
 ```
 ## Model Development
 ### Approach
-- **Transfer Learning: Combined outputs from pre-trained ResNet50 and ResNet152.
-- **Fine-Tuning: Customized both models using the OKDIR-5K eye disease dataset.
-- **Performance: Achieved 86% accuracy on the test set.
+- Transfer Learning: Combined outputs from pre-trained ResNet50 and ResNet152.
+- Fine-Tuning: Customized both models using the OKDIR-5K eye disease dataset.
+- Performance: Achieved 86% accuracy on the test set.
 
 ### Tools and libraries
-- **Model Training: TensorFlow, Keras
-- **Web Interface: Streamlit
-- **Data Handling: NumPy, Pandas, Matplotlib
+- Model Training: TensorFlow, Keras
+- Web Interface: Streamlit
+- Data Handling: NumPy, Pandas, Matplotlib
 
 ## Installation and Execution
-** Clone Repo:
+Clone Repo:
 ```plaintext
 git clone https://github.com/stronitum-rn/netra.ai.git
 cd netra.ai
 ```
-** Launch the application
+Launch the application
 ```
 streamlit run app.py
 ```
