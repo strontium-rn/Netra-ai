@@ -1,0 +1,23 @@
+# Netra.ai - Eye Disease Detection Project
+
+Netra.ai is a deep learning-based application for detecting eye diseases using transfer learning, deployed via a Streamlit interface. This project is part of our semester work at Kathmandu University.
+
+## 📌 Overview
+Netra.ai employs transfer learning by combining ResNet50 and ResNet152 models into an ensemble, achieving 86% accuracy. The model is deployed through a Streamlit web application.
+
+## 🚀 Features
+- **Image Upload & Prediction:** Diagnose eye diseases from uploaded images.
+- **High Accuracy:** Ensemble model (ResNet50 + ResNet152) with 86% accuracy.
+- **Interactive UI:** Built using Streamlit for easy use.
+
+## 📂 Project Structure
+```plaintext
+Netra.ai/
+├── model/
+│   └── netra_model.h5        # Trained ensemble model
+├── app/
+│   └── app.py                # Streamlit app script
+├── data/
+│   └── sample_images/        # Sample images for testing
+└── README.md
+```
