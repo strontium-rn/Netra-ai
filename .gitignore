@@ -1,0 +1,4 @@
+datatset/
+.venv/
+*h5
+netra-ai-model.h5/
