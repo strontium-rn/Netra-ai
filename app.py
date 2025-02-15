@@ -21,7 +21,6 @@ def preprocess_image(image):
         image = image.convert('RGB')
     
     # Resize image to match model's expected input size
-    # Adjust size based on your model's requirements
     image = image.resize((224, 224))
     
     # Convert to array and preprocess
@@ -31,6 +30,7 @@ def preprocess_image(image):
     # Normalize pixel values
     img_array = img_array / 255.0
     
+    print(img_array)
     return img_array
 
 def main():
@@ -41,7 +41,7 @@ def main():
         layout="wide"
     )
 
-    # Custom CSS for better styling
+    # Custom CSS remains the same...
     st.markdown("""
         <style>
         .main { 
@@ -67,13 +67,12 @@ def main():
         </style>
     """, unsafe_allow_html=True)
 
-    # Header section
+    # Header and sidebar remain the same...
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
         st.title("🔬 Netra.ai Analysis System")
         st.markdown("---")
 
-    # Sidebar for additional information
     with st.sidebar:
         st.header("About")
         st.info("""
@@ -85,7 +84,6 @@ def main():
         st.write("2. Click 'Generate Prediction'")
         st.write("3. Review the analysis results")
         
-        # Add information about accepted image formats
         st.markdown("---")
         st.subheader("Supported Formats")
         st.write("- JPEG/JPG")
@@ -98,7 +96,6 @@ def main():
     if model:
         st.subheader("Upload Fundus Photograph")
         
-        # Create upload section with preview
         uploaded_file = st.file_uploader(
             "Choose a fundus photograph...", 
             type=['jpg', 'jpeg', 'png', 'bmp'],
@@ -106,57 +103,77 @@ def main():
         )
 
         if uploaded_file is not None:
-            # Display the uploaded image
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Uploaded Fundus Photograph", use_column_width=True)
-            
-            # Center the predict button
-            col1, col2, col3 = st.columns([1,1,1])
-            with col2:
-                predict_button = st.button("Generate Prediction", use_container_width=True)
+            try:
+                image = Image.open(uploaded_file)
+                st.image(image, caption="Uploaded Fundus Photograph", use_container_width=True)
+                
+                col1, col2, col3 = st.columns([1,1,1])
+                with col2:
+                    predict_button = st.button("Generate Prediction", use_container_width=True)
 
-            if predict_button:
-                with st.spinner("Analyzing fundus photograph..."):
-                    try:
+                if predict_button:
+                    with st.spinner("Analyzing fundus photograph..."):
                         # Preprocess the image
                         processed_image = preprocess_image(image)
                         
                         # Make prediction
                         prediction = model.predict(processed_image)
                         
-                        # Display prediction in a nice format
+                        # Define class names
+                        class_names = [
+                            "Normal (N)", 
+                            "Diabetes (D)", 
+                            "Glaucoma (G)", 
+                            "Cataract (C)",
+                            "Age related Macular Degeneration (A)",
+                            "Hypertension (H)", 
+                            "Pathological Myopia (M)", 
+                            "Other diseases/abnormalities (O)"
+                        ]
+
+                        # Ensure prediction is in the right shape
+                        if len(prediction.shape) > 1:
+                            pred_values = prediction[0]
+                        else:
+                            pred_values = prediction
+
+                        # Verify we have the right number of predictions
+                        if len(pred_values) != len(class_names):
+                            st.error(f"Model output shape ({len(pred_values)}) doesn't match expected number of classes ({len(class_names)})")
+                            return
+
+                        # Display results
                         st.markdown("---")
                         st.subheader("Analysis Results")
                         
-                        # Create three columns for displaying results
                         col1, col2, col3 = st.columns(3)
                         
-                        # Assuming your model outputs class probabilities
-                        # Modify these based on your model's actual output format
+                        predicted_class = np.argmax(pred_values)
+                        confidence = float(pred_values[predicted_class]) * 100
+
                         with col1:
-                            predicted_class = np.argmax(prediction[0])
-                            class_names = ["Healthy", "Mild DR", "Moderate DR", "Severe DR"]  # Update with your classes
                             st.metric(label="Diagnosis", value=class_names[predicted_class])
                         
                         with col2:
-                            confidence = np.max(prediction[0]) * 100
                             st.metric(label="Confidence", value=f"{confidence:.2f}%")
                         
                         with col3:
                             st.metric(label="Analysis Time", value="< 1 sec")
 
-                        # Additional details in an expander
+                        # Detailed analysis
                         with st.expander("See detailed analysis"):
                             st.write("Class probabilities:")
-                            for i, prob in enumerate(prediction[0]):
-                                st.write(f"{class_names[i]}: {prob*100:.2f}%")
+                            for name, prob in zip(class_names, pred_values):
+                                st.write(f"{name}: {float(prob)*100:.2f}%")
                             
-                            # Add any additional analysis details here
                             st.write("\nNote: This analysis is for screening purposes only. Please consult with an eye care professional for proper diagnosis.")
 
-                    except Exception as e:
-                        st.error(f"An error occurred during analysis: {str(e)}")
-                        st.write("Please ensure you've uploaded a valid fundus photograph and try again.")
+            except Exception as e:
+                st.error(f"An error occurred: {str(e)}")
+                st.write("Debug information:")
+                st.write(f"Error type: {type(e).__name__}")
+                st.write(f"Error message: {str(e)}")
 
 if __name__ == "__main__":
     main()
+
