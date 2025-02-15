@@ -30,7 +30,7 @@ def preprocess_image(image):
     # Normalize pixel values
     img_array = img_array / 255.0
     
-    print(img_array)
+    
     return img_array
 
 def main():
