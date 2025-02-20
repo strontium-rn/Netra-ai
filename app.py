@@ -155,10 +155,10 @@ def main():
                             st.metric(label="Diagnosis", value=class_names[predicted_class])
                         
                         with col2:
-                            st.metric(label="Confidence", value=f"{confidence:.2f}%")
+                            st.metric(label="Confidence", value=f"{confidence:.1f}%")
                         
                         with col3:
-                            st.metric(label="Analysis Time", value="< 1 sec")
+                            st.metric(label="Analysis Time", value="< 2 sec")
 
                         # Detailed analysis
                         with st.expander("See detailed analysis"):
